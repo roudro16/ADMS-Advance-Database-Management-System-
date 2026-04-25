@@ -1,0 +1,996 @@
+Q1: Display volunteer name and email using variables 
+
+-- Project: University Volunteer Activity Management System 
+
+-- Semester: Spring 2025-2026 
+
+-- Course: Advance Database Management System 
+
+-- Section: (A) 
+
+DECLARE 
+
+    v_name    VARCHAR2(50); 
+
+    v_email   VARCHAR2(50); 
+
+BEGIN 
+
+    SELECT VName, Email 
+
+    INTO v_name, v_email 
+
+    FROM Volunteer 
+
+    WHERE VolID = 1; 
+
+     
+
+    DBMS_OUTPUT.PUT_LINE('Name  : ' || v_name); 
+
+    DBMS_OUTPUT.PUT_LINE('Email : ' || v_email); 
+
+END;  
+
+Q2: Display task name and deadline using variables 
+
+-- Project: University Volunteer Activity Management System 
+
+-- Semester: Spring 2025-2026 
+
+-- Course: Advance Database Management System 
+
+-- Section: (A) 
+
+DECLARE 
+
+    v_taskname  VARCHAR2(50); 
+
+    v_deadline  DATE; 
+
+BEGIN 
+
+    SELECT TaskName, Deadline 
+
+    INTO v_taskname, v_deadline 
+
+    FROM Task 
+
+    WHERE TaskID = 1; 
+
+     
+
+    DBMS_OUTPUT.PUT_LINE('Task     : ' || v_taskname); 
+
+    DBMS_OUTPUT.PUT_LINE('Deadline : ' || v_deadline); 
+
+END;  
+2. Operators 
+
+Q3: Show volunteers who worked more than 5 hours (comparison operator) 
+
+-- Project: University Volunteer Activity Management System 
+
+-- Semester: Spring 2025-2026 
+
+-- Course: Advance Database Management System 
+
+-- Section: (A) 
+
+ 
+
+SET SERVEROUTPUT ON; 
+
+ 
+
+BEGIN 
+
+    FOR rec IN ( 
+
+        SELECT V.VName, P.HoursWorked 
+
+        FROM Volunteer V 
+
+        JOIN Participation P ON V.VolID = P.VolID 
+
+        WHERE P.HoursWorked > 5 
+
+    ) 
+
+    LOOP 
+
+        DBMS_OUTPUT.PUT_LINE('Name: ' || rec.VName || 
+
+                             ', Hours: ' || rec.HoursWorked); 
+
+    END LOOP; 
+
+END; 
+
+2. Operators 
+
+Q3: Show volunteers who worked more than 5 hours (comparison operator) 
+
+-- Project: University Volunteer Activity Management System 
+
+-- Semester: Spring 2025-2026 
+
+-- Course: Advance Database Management System 
+
+-- Section: (A) 
+
+ 
+
+SET SERVEROUTPUT ON; 
+
+ 
+
+BEGIN 
+
+    FOR rec IN ( 
+
+        SELECT V.VName, P.HoursWorked 
+
+        FROM Volunteer V 
+
+        JOIN Participation P ON V.VolID = P.VolID 
+
+        WHERE P.HoursWorked > 5 
+
+    ) 
+
+    LOOP 
+
+        DBMS_OUTPUT.PUT_LINE('Name: ' || rec.VName || 
+
+                             ', Hours: ' || rec.HoursWorked); 
+
+    END LOOP; 
+
+END; 
+
+Q3: Show volunteers who worked more than 5 hours (comparison operator) 
+
+-- Project: University Volunteer Activity Management System 
+
+-- Semester: Spring 2025-2026 
+
+-- Course: Advance Database Management System 
+
+-- Section: (A) 
+
+ 
+
+SET SERVEROUTPUT ON; 
+
+ 
+
+BEGIN 
+
+    FOR rec IN ( 
+
+        SELECT V.VName, P.HoursWorked 
+
+        FROM Volunteer V 
+
+        JOIN Participation P ON V.VolID = P.VolID 
+
+        WHERE P.HoursWorked > 5 
+
+    ) 
+
+    LOOP 
+
+        DBMS_OUTPUT.PUT_LINE('Name: ' || rec.VName || 
+
+                             ', Hours: ' || rec.HoursWorked); 
+
+    END LOOP; 
+
+END; 
+
+Q3: Show volunteers who worked more than 5 hours (comparison operator) 
+
+-- Project: University Volunteer Activity Management System 
+
+-- Semester: Spring 2025-2026 
+
+-- Course: Advance Database Management System 
+
+-- Section: (A) 
+
+ 
+
+SET SERVEROUTPUT ON; 
+
+ 
+
+BEGIN 
+
+    FOR rec IN ( 
+
+        SELECT V.VName, P.HoursWorked 
+
+        FROM Volunteer V 
+
+        JOIN Participation P ON V.VolID = P.VolID 
+
+        WHERE P.HoursWorked > 5 
+
+    ) 
+
+    LOOP 
+
+        DBMS_OUTPUT.PUT_LINE('Name: ' || rec.VName || 
+
+                             ', Hours: ' || rec.HoursWorked); 
+
+    END LOOP; 
+
+END; 
+
+Q4: Show events that are Health OR Environment type (logical operator) 
+
+-- Project: University Volunteer Activity Management System 
+
+-- Semester: Spring 2025-2026 
+
+-- Course: Advance Database Management System 
+
+-- Section: (A) 
+
+ 
+
+BEGIN 
+FOR rec IN ( 
+SELECT EventName, EventType, EventLocation 
+FROM Event 
+WHERE EventType = 'Health' 
+OR EventType = 'Environment' 
+) 
+LOOP 
+DBMS_OUTPUT.PUT_LINE('Event: ' || rec.EventName || 
+', Type: ' || rec.EventType || 
+', Location: ' || rec.EventLocation); 
+END LOOP; 
+END; 
+
+Q5: Display volunteer names in UPPER case and email in lower case 
+
+-- Project: University Volunteer Activity Management System 
+
+-- Semester: Spring 2025-2026 
+
+-- Course: Advance Database Management System 
+
+-- Section: (A) 
+
+ 
+
+BEGIN 
+FOR rec IN ( 
+SELECT UPPER(VName) AS Name, 
+LOWER(Email) AS Email 
+FROM Volunteer 
+) 
+LOOP 
+DBMS_OUTPUT.PUT_LINE('Name: ' || rec.Name || 
+', Email: ' || rec.Email); 
+END LOOP; 
+END; 
+
+Q6: Display task name and days left until deadline using ROUND 
+
+-- Project: University Volunteer Activity Management System 
+
+-- Semester: Spring 2025-2026 
+
+-- Course: Advance Database Management System 
+
+-- Section: (A) 
+
+ 
+
+BEGIN 
+FOR rec IN ( 
+SELECT TaskName, 
+ROUND(Deadline - SYSDATE) AS DaysLeft 
+FROM Task 
+) 
+LOOP 
+DBMS_OUTPUT.PUT_LINE('Task: ' || rec.TaskName || 
+', Days Left: ' || rec.DaysLeft); 
+END LOOP; 
+END; 
+
+Q7: Show total hours worked and average feedback rating per event 
+
+-- Project: University Volunteer Activity Management System 
+
+-- Semester: Spring 2025-2026 
+
+-- Course: Advance Database Management System 
+
+-- Section: (A) 
+
+ 
+
+BEGIN 
+FOR rec IN ( 
+SELECT EventID, 
+SUM(HoursWorked) AS TotalHours, 
+AVG(FeedbackRating) AS AvgRating 
+FROM Participation 
+GROUP BY EventID 
+) 
+LOOP 
+DBMS_OUTPUT.PUT_LINE('EventID: ' || rec.EventID || 
+', Total Hours: ' || rec.TotalHours || 
+', Avg Rating: ' || rec.AvgRating); 
+END LOOP; 
+END; 
+
+Q8: Show total volunteers, maximum and minimum hours worked 
+
+-- Project: University Volunteer Activity Management System 
+
+-- Semester: Spring 2025-2026 
+
+-- Course: Advance Database Management System 
+
+-- Section: (A) 
+
+ 
+
+DECLARE 
+v_total NUMBER; 
+v_max NUMBER; 
+v_min NUMBER; 
+BEGIN 
+SELECT COUNT(VolID), MAX(HoursWorked), MIN(HoursWorked) 
+INTO v_total, v_max, v_min 
+FROM Participation; 
+ 
+DBMS_OUTPUT.PUT_LINE('Total Volunteers: ' || v_total); 
+DBMS_OUTPUT.PUT_LINE('Max Hours: ' || v_max); 
+DBMS_OUTPUT.PUT_LINE('Min Hours: ' || v_min); 
+END; 
+Q9: Print all volunteer names using a LOOP 
+
+-- Project: University Volunteer Activity Management System 
+
+-- Semester: Spring 2025-2026 
+
+-- Course: Advance Database Management System 
+
+-- Section: (A) 
+
+ 
+
+BEGIN 
+FOR rec IN ( 
+SELECT VName FROM Volunteer 
+) 
+LOOP 
+DBMS_OUTPUT.PUT_LINE('Volunteer: ' || rec.VName); 
+END LOOP; 
+END; 
+
+Q10: Print task names 1 to 5 using FOR LOOP 
+
+-- Project: University Volunteer Activity Management System 
+
+-- Semester: Spring 2025-2026 
+
+-- Course: Advance Database Management System 
+
+-- Section: (A) 
+
+BEGIN 
+
+    FOR i IN 1..5 LOOP 
+
+        FOR rec IN ( 
+
+            SELECT TaskName FROM Task WHERE TaskID = i 
+
+        ) 
+
+        LOOP 
+
+            DBMS_OUTPUT.PUT_LINE('Task ' || i || ': ' || rec.TaskName); 
+
+        END LOOP; 
+
+    END LOOP; 
+
+END; 
+
+Q11: Check feedback rating and display performance level using IF-ELSIF 
+
+-- Project: University Volunteer Activity Management System 
+
+-- Semester: Spring 2025-2026 
+
+-- Course: Advance Database Management System 
+
+-- Section: (A) 
+
+DECLARE 
+
+    v_rating  NUMBER; 
+
+    v_result  VARCHAR2(20); 
+
+BEGIN 
+
+    SELECT FeedbackRating INTO v_rating 
+
+    FROM Participation WHERE ParticipationID = 1; 
+
+     
+
+    IF v_rating = 5 THEN 
+
+        v_result := 'Excellent'; 
+
+    ELSIF v_rating = 4 THEN 
+
+        v_result := 'Good'; 
+
+    ELSIF v_rating = 3 THEN 
+
+        v_result := 'Average'; 
+
+    ELSE 
+
+        v_result := 'Poor'; 
+
+    END IF; 
+
+     
+
+    DBMS_OUTPUT.PUT_LINE('Rating : ' || v_rating); 
+
+    DBMS_OUTPUT.PUT_LINE('Level  : ' || v_result); 
+
+END;  
+
+Q12: Check task status and print message using CASE 
+
+-- Project: University Volunteer Activity Management System 
+
+-- Semester: Spring 2025-2026 
+
+-- Course: Advance Database Management System 
+
+-- Section: (A) 
+
+DECLARE 
+
+    v_status  VARCHAR2(20); 
+
+    v_msg     VARCHAR2(50); 
+
+BEGIN 
+
+    SELECT Status INTO v_status 
+
+    FROM Task WHERE TaskID = 1; 
+
+     
+
+    v_msg := CASE v_status 
+
+        WHEN 'Completed' THEN 'Task is done' 
+
+        WHEN 'Pending'   THEN 'Task is waiting' 
+
+        ELSE                  'Status unknown' 
+
+    END; 
+
+     
+
+    DBMS_OUTPUT.PUT_LINE('Status  : ' || v_status); 
+
+    DBMS_OUTPUT.PUT_LINE('Message : ' || v_msg); 
+
+END; 
+
+
+Q13: Show volunteer who participated in Blood Donation Camp (single-row subquery) 
+
+-- Project: University Volunteer Activity Management System 
+
+-- Semester: Spring 2025-2026 
+
+-- Course: Advance Database Management System 
+
+-- Section: (A) 
+
+ 
+
+DECLARE 
+
+    v_name  VARCHAR2(50); 
+
+    v_email VARCHAR2(50); 
+
+BEGIN 
+
+    SELECT VName, Email INTO v_name, v_email 
+
+    FROM Volunteer 
+
+    WHERE VolID = ( 
+
+        SELECT VolID FROM Participation 
+
+        WHERE EventID = ( 
+
+            SELECT EventID FROM Event 
+
+            WHERE EventName = 'Blood Donation Camp' 
+
+        ) 
+
+        AND ROWNUM = 1 
+
+    ); 
+
+ 
+
+    DBMS_OUTPUT.PUT_LINE('Name: ' || v_name); 
+
+    DBMS_OUTPUT.PUT_LINE('Email: ' || v_email); 
+
+END; 
+
+Q14: Show volunteers who worked above average hours (multiple-row subquery) 
+
+-- Project: University Volunteer Activity Management System 
+
+-- Semester: Spring 2025-2026 
+
+-- Course: Advance Database Management System 
+
+-- Section: (A) 
+
+BEGIN 
+
+    FOR rec IN ( 
+
+        SELECT V.VName, P.HoursWorked 
+
+        FROM Volunteer V 
+
+        JOIN Participation P ON V.VolID = P.VolID 
+
+        WHERE P.HoursWorked > ( 
+
+            SELECT AVG(HoursWorked) FROM Participation 
+
+        ) 
+
+    ) 
+
+    LOOP 
+
+        DBMS_OUTPUT.PUT_LINE('Name: ' || rec.VName || 
+
+                             ', Hours: ' || rec.HoursWorked); 
+
+    END LOOP; 
+
+END; 
+
+Q15: Show volunteer name with the event they participated in (Equijoin) 
+
+-- Project: University Volunteer Activity Management System 
+
+-- Semester: Spring 2025-2026 
+
+-- Course: Advance Database Management System 
+
+-- Section: (A) 
+
+BEGIN 
+
+    FOR rec IN ( 
+
+        SELECT V.VName, E.EventName, P.AttStatus, P.HoursWorked 
+
+        FROM Volunteer V 
+
+        JOIN Participation P ON V.VolID = P.VolID 
+
+        JOIN Event E ON E.EventID = P.EventID 
+
+    ) 
+
+    LOOP 
+
+        DBMS_OUTPUT.PUT_LINE( 
+
+            rec.VName || ' | ' || 
+
+            rec.EventName || ' | ' || 
+
+            rec.AttStatus || ' | ' || 
+
+            rec.HoursWorked 
+
+        ); 
+
+    END LOOP; 
+
+END; 
+
+Q16: Show activity name with assigned volunteer and role (Equijoin) 
+
+-- Project: University Volunteer Activity Management System 
+
+-- Semester: Spring 2025-2026 
+
+-- Course: Advance Database Management System 
+
+-- Section: (A) 
+
+BEGIN 
+FOR rec IN ( 
+SELECT A.ActivityName, V.VName, AA.Role, AA.CompletionStatus 
+FROM Activity A 
+JOIN Activity_Assignment AA ON A.ActivityID = AA.ActivityID 
+JOIN Volunteer V ON V.VolID = AA.VolID 
+) 
+LOOP 
+DBMS_OUTPUT.PUT_LINE( 
+rec.ActivityName || ' | ' || 
+rec.VName || ' | ' || 
+rec.Role || ' | ' || 
+rec.CompletionStatus 
+); 
+END LOOP; 
+END; 
+
+Q1: Function to get total hours worked by a volunteer 
+-- Project: University Volunteer Activity Management System 
+-- Semester: Spring 2025-2026 
+-- Course: Advance Database Management System 
+-- Section: (A) 
+ 
+
+CREATE OR REPLACE FUNCTION get_total_hours(p_volid IN NUMBER) 
+RETURN NUMBER IS 
+    v_total NUMBER; 
+BEGIN 
+    SELECT SUM(HoursWorked) INTO v_total 
+    FROM Participation WHERE VolID = p_volid; 
+    RETURN NVL(v_total, 0); 
+END; 
+/ 
+Q2: Function to get volunteer name by VolID 
+-- Project: University Volunteer Activity Management System 
+-- Semester: Spring 2025-2026 
+-- Course: Advance Database Management System 
+-- Section: (A) 
+ 
+
+CREATE OR REPLACE FUNCTION get_volunteer_name(p_volid IN NUMBER) 
+RETURN VARCHAR2 IS 
+    v_name VARCHAR2(50); 
+BEGIN 
+    SELECT VName INTO v_name FROM Volunteer WHERE VolID = p_volid; 
+    RETURN v_name; 
+END; 
+/ 
+
+SELECT get_volunteer_name(1) AS VolunteerName FROM DUAL; 
+
+Q3: Procedure to display all tasks with their status 
+
+ 
+-- Project: University Volunteer Activity Management System 
+-- Semester: Spring 2025-2026 
+-- Course: Advance Database Management System 
+-- Section: (A) 
+ 
+
+CREATE OR REPLACE PROCEDURE show_all_tasks IS 
+    CURSOR c_task IS SELECT TaskID, TaskName, Status FROM Task; 
+    v_id   Task.TaskID%TYPE; 
+    v_name Task.TaskName%TYPE; 
+    v_stat Task.Status%TYPE; 
+BEGIN 
+    OPEN c_task; 
+    LOOP 
+        FETCH c_task INTO v_id, v_name, v_stat; 
+        EXIT WHEN c_task%NOTFOUND; 
+        DBMS_OUTPUT.PUT_LINE('TaskID: '||v_id||' | '||v_name||' | '||v_stat); 
+    END LOOP; 
+    CLOSE c_task; 
+END; 
+/ 
+
+BEGIN 
+
+    show_all_tasks; 
+
+END;  
+
+ 
+
+Q4: Procedure to update task status by TaskID 
+-- Project: University Volunteer Activity Management System 
+-- Semester: Spring 2025-2026 
+-- Course: Advance Database Management System 
+-- Section: (A) 
+ 
+
+CREATE OR REPLACE PROCEDURE update_task_status( 
+    p_taskid IN NUMBER, p_status IN VARCHAR2) IS 
+BEGIN 
+    UPDATE Task SET Status = p_status WHERE TaskID = p_taskid; 
+    IF SQL%ROWCOUNT = 0 THEN 
+        DBMS_OUTPUT.PUT_LINE('No task found with ID: ' || p_taskid); 
+    ELSE 
+        DBMS_OUTPUT.PUT_LINE('Task '||p_taskid||' updated to: '||p_status); 
+        COMMIT; 
+    END IF; 
+END; 
+/ 
+
+BEGIN 
+update_task_status(1, 'Completed'); 
+END; 
+
+
+Q5: Display volunteer details using table-based record 
+
+ 
+-- Project: University Volunteer Activity Management System 
+-- Semester: Spring 2025-2026 
+-- Course: Advance Database Management System 
+-- Section: (A) 
+ 
+
+DECLARE 
+    v_rec Volunteer%ROWTYPE; 
+BEGIN 
+    SELECT * INTO v_rec FROM Volunteer WHERE VolID = 1; 
+    DBMS_OUTPUT.PUT_LINE('VolID : ' || v_rec.VolID); 
+    DBMS_OUTPUT.PUT_LINE('Name  : ' || v_rec.VName); 
+    DBMS_OUTPUT.PUT_LINE('Email : ' || v_rec.Email); 
+END; 
+
+Q7: Display all volunteers using explicit cursor 
+
+-- Project: University Volunteer Activity Management System 
+-- Semester: Spring 2025-2026 
+-- Course: Advance Database Management System 
+-- Section: (A) 
+ 
+
+DECLARE 
+    CURSOR c_vol IS SELECT VolID, VName, Email FROM Volunteer; 
+    v_id    Volunteer.VolID%TYPE; 
+    v_name  Volunteer.VName%TYPE; 
+    v_email Volunteer.Email%TYPE; 
+BEGIN 
+    OPEN c_vol; 
+    LOOP 
+        FETCH c_vol INTO v_id, v_name, v_email; 
+        EXIT WHEN c_vol%NOTFOUND; 
+        DBMS_OUTPUT.PUT_LINE(v_id||' | '||v_name||' | '||v_email); 
+    END LOOP; 
+    CLOSE c_vol; 
+END; 
+
+Q9: Display participation details using cursor-based record 
+
+-- Project: University Volunteer Activity Management System 
+-- Semester: Spring 2025-2026 
+-- Course: Advance Database Management System 
+-- Section: (A) 
+ 
+
+DECLARE 
+    CURSOR c_part IS 
+        SELECT ParticipationID,VolID,EventID,AttStatus,HoursWorked 
+        FROM Participation; 
+    v_rec c_part%ROWTYPE; 
+BEGIN 
+    OPEN c_part; 
+    LOOP 
+        FETCH c_part INTO v_rec; 
+        EXIT WHEN c_part%NOTFOUND; 
+        DBMS_OUTPUT.PUT_LINE( 
+            'PartID: '||v_rec.ParticipationID|| 
+            ' VolID: '||v_rec.VolID|| 
+            ' Status: '||v_rec.AttStatus|| 
+            ' Hours: '||v_rec.HoursWorked); 
+    END LOOP; 
+    CLOSE c_part; 
+END; 
+
+Q10: Display task assignment details using cursor-based record 
+
+-- Project: University Volunteer Activity Management System 
+-- Semester: Spring 2025-2026 
+-- Course: Advance Database Management System 
+-- Section: (A) 
+ 
+
+DECLARE 
+    CURSOR c_ta IS 
+        SELECT TaskAssignID,TaskID,VolID,AssignDate,CompletionStatus 
+        FROM Task_Assignment; 
+    v_rec c_ta%ROWTYPE; 
+BEGIN 
+    OPEN c_ta; 
+    LOOP 
+        FETCH c_ta INTO v_rec; 
+        EXIT WHEN c_ta%NOTFOUND; 
+        DBMS_OUTPUT.PUT_LINE( 
+            'ID: '||v_rec.TaskAssignID|| 
+            ' TaskID: '||v_rec.TaskID|| 
+            ' VolID: '||v_rec.VolID|| 
+            ' Status: '||v_rec.CompletionStatus); 
+    END LOOP; 
+    CLOSE c_ta; 
+END; 
+
+Q11: Trigger to prevent negative hours worked 
+
+ 
+-- Project: University Volunteer Activity Management System 
+-- Semester: Spring 2025-2026 
+-- Course: Advance Database Management System 
+-- Section: (Your Section) 
+ 
+
+CREATE OR REPLACE TRIGGER trg_check_hours 
+BEFORE INSERT OR UPDATE ON Participation 
+FOR EACH ROW 
+BEGIN 
+    IF :NEW.HoursWorked < 0 THEN 
+        RAISE_APPLICATION_ERROR(-20001, 
+            'Hours worked cannot be negative.'); 
+    END IF; 
+END; 
+Q13: Trigger to log a message when any new volunteer is inserted 
+
+-- Project: University Volunteer Activity Management System 
+-- Semester: Spring 2025-2026 
+-- Course: Advance Database Management System 
+-- Section: (A) 
+ 
+
+CREATE TABLE Volunteer_Log ( 
+    LogID      NUMBER PRIMARY KEY, 
+    LogMessage VARCHAR2(100), 
+    LogTime    DATE 
+); 
+CREATE SEQUENCE seq_log START WITH 1 INCREMENT BY 1; 
+ 
+
+CREATE OR REPLACE TRIGGER trg_vol_insert_log 
+AFTER INSERT ON Volunteer 
+BEGIN 
+    INSERT INTO Volunteer_Log 
+    VALUES (seq_log.NEXTVAL,'New volunteer inserted',SYSDATE); 
+END; 
+/ 
+
+Q14: Trigger to prevent any DELETE on Organizer table 
+
+ 
+-- Project: University Volunteer Activity Management System 
+-- Semester: Spring 2025-2026 
+-- Course: Advance Database Management System 
+-- Section: (A) 
+ 
+
+CREATE OR REPLACE TRIGGER trg_prevent_org_delete 
+BEFORE DELETE ON Organizer 
+BEGIN 
+    RAISE_APPLICATION_ERROR(-20002, 
+        'Deletion from Organizer table is not allowed.'); 
+END; 
+ Q15: Package for Volunteer operations 
+-- Project: University Volunteer Activity Management System 
+-- Semester: Spring 2025-2026 
+-- Course: Advance Database Management System 
+-- Section: (A) 
+ 
+
+-- Package Specification: 
+CREATE OR REPLACE PACKAGE pkg_volunteer AS 
+    FUNCTION  get_vol_name(p_volid IN NUMBER) RETURN VARCHAR2; 
+    PROCEDURE show_vol_skills(p_volid IN NUMBER); 
+END pkg_volunteer; 
+/ 
+
+-- Package Body: 
+CREATE OR REPLACE PACKAGE BODY pkg_volunteer AS 
+    FUNCTION get_vol_name(p_volid IN NUMBER) RETURN VARCHAR2 IS 
+        v_name VARCHAR2(50); 
+    BEGIN 
+        SELECT VName INTO v_name FROM Volunteer WHERE VolID=p_volid; 
+        RETURN v_name; 
+    END; 
+    PROCEDURE show_vol_skills(p_volid IN NUMBER) IS 
+        CURSOR c_skill IS 
+            SELECT Skill FROM Vol_Skill WHERE VolID=p_volid; 
+        v_skill Vol_Skill.Skill%TYPE; 
+    BEGIN 
+        DBMS_OUTPUT.PUT_LINE('Skills of: '||get_vol_name(p_volid)); 
+        OPEN c_skill; 
+        LOOP 
+            FETCH c_skill INTO v_skill; 
+            EXIT WHEN c_skill%NOTFOUND; 
+            DBMS_OUTPUT.PUT_LINE(' - ' || v_skill); 
+        END LOOP; 
+        CLOSE c_skill; 
+    END; 
+END pkg_volunteer; 
+/ 
+
+SELECT pkg_volunteer.get_vol_name(1) FROM DUAL; 
+BEGIN 
+    pkg_volunteer.show_vol_skills(1); 
+END; 
+ 
+
+ 
+ 
+
+Q16: Package for Event operations 
+
+ 
+-- Project: University Volunteer Activity Management System 
+-- Semester: Spring 2025-2026 
+-- Course: Advance Database Management System 
+-- Section: (A) 
+ 
+
+-- Package Specification: 
+CREATE OR REPLACE PACKAGE pkg_event AS 
+    FUNCTION  get_event_name(p_eventid IN NUMBER) RETURN VARCHAR2; 
+    PROCEDURE show_event_volunteers(p_eventid IN NUMBER); 
+END pkg_event; 
+/ 
+
+-- Package Body: 
+CREATE OR REPLACE PACKAGE BODY pkg_event AS 
+    FUNCTION get_event_name(p_eventid IN NUMBER) RETURN VARCHAR2 IS 
+        v_name VARCHAR2(50); 
+    BEGIN 
+        SELECT EventName INTO v_name FROM Event WHERE EventID=p_eventid; 
+        RETURN v_name; 
+    END; 
+    PROCEDURE show_event_volunteers(p_eventid IN NUMBER) IS 
+        CURSOR c_vols IS 
+            SELECT V.VName, P.HoursWorked, P.AttStatus 
+            FROM Volunteer V, Participation P 
+            WHERE V.VolID=P.VolID AND P.EventID=p_eventid; 
+        v_rec c_vols%ROWTYPE; 
+    BEGIN 
+        DBMS_OUTPUT.PUT_LINE('Volunteers: '||get_event_name(p_eventid)); 
+        OPEN c_vols; 
+        LOOP 
+            FETCH c_vols INTO v_rec; 
+            EXIT WHEN c_vols%NOTFOUND; 
+            DBMS_OUTPUT.PUT_LINE(' - '||v_rec.VName||' | '||v_rec.HoursWorked||'h'); 
+        END LOOP; 
+        CLOSE c_vols; 
+    END; 
+END pkg_event; 
+/ 
+
+SELECT pkg_event.get_event_name(1) FROM DUAL; 
+BEGIN 
+pkg_event.show_event_volunteers(1); 
+END; 
+/  

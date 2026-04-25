@@ -1,0 +1,1483 @@
+SQL> ALTER SESSION SET "_ORACLE_SCRIPT"=TRUE;
+
+Session altered.
+
+SQL> CREATE USER vams IDENTIFIED BY vams123;
+
+User created.
+
+SQL> GRANT CONNECT, RESOURCE TO vams;
+
+Grant succeeded.
+
+SQL> GRANT UNLIMITED TABLESPACE TO vams;
+
+Grant succeeded.
+
+SQL> connect vams/vams123
+Connected.
+SQL> SET SERVEROUTPUT ON;
+SQL> CREATE SEQUENCE seq_org        START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+
+Sequence created.
+
+SQL> CREATE SEQUENCE seq_event      START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+
+Sequence created.
+
+SQL> CREATE SEQUENCE seq_act        START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+
+Sequence created.
+
+SQL> CREATE SEQUENCE seq_student    START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+
+Sequence created.
+
+SQL> CREATE SEQUENCE seq_vol        START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+
+Sequence created.
+
+SQL> CREATE SEQUENCE seq_task       START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+
+Sequence created.
+
+SQL> CREATE SEQUENCE seq_skill      START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+
+Sequence created.
+
+SQL> CREATE SEQUENCE seq_part       START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+
+Sequence created.
+
+SQL> CREATE SEQUENCE seq_actassign  START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+
+Sequence created.
+
+SQL> CREATE SEQUENCE seq_taskassign START WITH 1 INCREMENT BY 1 NOCACHE NOCYCLE;
+
+Sequence created.
+
+SQL> CREATE TABLE Organizer (
+  2      OrgID    NUMBER(5)    PRIMARY KEY,
+  3      OrgName  VARCHAR2(50) NOT NULL,
+  4      OrgType  VARCHAR2(30) NOT NULL
+  5  );
+
+Table created.
+
+SQL> DESCRIBE Organizer;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ORGID                                     NOT NULL NUMBER(5)
+ ORGNAME                                   NOT NULL VARCHAR2(50)
+ ORGTYPE                                   NOT NULL VARCHAR2(30)
+
+SQL> CREATE TABLE Event (
+  2      EventID       NUMBER(5)     PRIMARY KEY,
+  3      EventName     VARCHAR2(50)  NOT NULL,
+  4      EventLocation VARCHAR2(50),
+  5      EventType     VARCHAR2(30),
+  6      EventDesc     VARCHAR2(200),
+  7      OrgID         NUMBER(5),
+  8      CONSTRAINT fk_event_org FOREIGN KEY (OrgID)
+  9          REFERENCES Organizer(OrgID)
+ 10  );
+
+Table created.
+
+SQL> DESCRIBE Event;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ EVENTID                                   NOT NULL NUMBER(5)
+ EVENTNAME                                 NOT NULL VARCHAR2(50)
+ EVENTLOCATION                                      VARCHAR2(50)
+ EVENTTYPE                                          VARCHAR2(30)
+ EVENTDESC                                          VARCHAR2(200)
+ ORGID                                              NUMBER(5)
+
+SQL> CREATE TABLE Activity (
+  2      ActivityID   NUMBER(5)    PRIMARY KEY,
+  3      ActivityName VARCHAR2(50) NOT NULL,
+  4      ActivityDesc VARCHAR2(200),
+  5      EventID      NUMBER(5),
+  6      CONSTRAINT fk_act_event FOREIGN KEY (EventID)
+  7          REFERENCES Event(EventID)
+  8  );
+
+Table created.
+
+SQL> DESCRIBE Activity;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ACTIVITYID                                NOT NULL NUMBER(5)
+ ACTIVITYNAME                              NOT NULL VARCHAR2(50)
+ ACTIVITYDESC                                       VARCHAR2(200)
+ EVENTID                                            NUMBER(5)
+
+SQL> CREATE TABLE Student (
+  2      StudentID  NUMBER(5)    PRIMARY KEY,
+  3      Department VARCHAR2(50) NOT NULL
+  4  );
+
+Table created.
+
+SQL> DESCRIBE Student;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ STUDENTID                                 NOT NULL NUMBER(5)
+ DEPARTMENT                                NOT NULL VARCHAR2(50)
+
+SQL> CREATE TABLE Volunteer (
+  2      VolID     NUMBER(5)    PRIMARY KEY,
+  3      VName     VARCHAR2(50) NOT NULL,
+  4      Email     VARCHAR2(50),
+  5      ContactNo VARCHAR2(15),
+  6      StudentID NUMBER(5),
+  7      CONSTRAINT fk_vol_student FOREIGN KEY (StudentID)
+  8          REFERENCES Student(StudentID)
+  9  );
+
+Table created.
+
+SQL> DESCRIBE Volunteer;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ VOLID                                     NOT NULL NUMBER(5)
+ VNAME                                     NOT NULL VARCHAR2(50)
+ EMAIL                                              VARCHAR2(50)
+ CONTACTNO                                          VARCHAR2(15)
+ STUDENTID                                          NUMBER(5)
+
+SQL> CREATE TABLE Task (
+  2      TaskID     NUMBER(5)    PRIMARY KEY,
+  3      TaskName   VARCHAR2(50) NOT NULL,
+  4      TaskDesc   VARCHAR2(200),
+  5      Deadline   DATE,
+  6      Status     VARCHAR2(20) DEFAULT 'Pending',
+  7      ActivityID NUMBER(5),
+  8      CONSTRAINT fk_task_act FOREIGN KEY (ActivityID)
+  9          REFERENCES Activity(ActivityID)
+ 10  );
+
+Table created.
+
+SQL> DESCRIBE Task;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ TASKID                                    NOT NULL NUMBER(5)
+ TASKNAME                                  NOT NULL VARCHAR2(50)
+ TASKDESC                                           VARCHAR2(200)
+ DEADLINE                                           DATE
+ STATUS                                             VARCHAR2(20)
+ ACTIVITYID                                         NUMBER(5)
+
+SQL> CREATE TABLE Vol_Skill (
+  2      SkillID NUMBER(5)    PRIMARY KEY,
+  3      VolID   NUMBER(5)    NOT NULL,
+  4      Skill   VARCHAR2(50) NOT NULL,
+  5      CONSTRAINT fk_skill_vol FOREIGN KEY (VolID)
+  6          REFERENCES Volunteer(VolID)
+  7  );
+
+Table created.
+
+SQL> DESCRIBE Vol_Skill;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ SKILLID                                   NOT NULL NUMBER(5)
+ VOLID                                     NOT NULL NUMBER(5)
+ SKILL                                     NOT NULL VARCHAR2(50)
+
+SQL> CREATE TABLE Participation (
+  2      ParticipationID NUMBER(5)    PRIMARY KEY,
+  3      VolID           NUMBER(5)    NOT NULL,
+  4      EventID         NUMBER(5)    NOT NULL,
+  5      RegDate         DATE,
+  6      AttStatus       VARCHAR2(20),
+  7      PerfEval        VARCHAR2(50),
+  8      FeedbackRating  NUMBER(2),
+  9      HoursWorked     NUMBER(4),
+ 10      CONSTRAINT fk_part_vol   FOREIGN KEY (VolID)
+ 11          REFERENCES Volunteer(VolID),
+ 12      CONSTRAINT fk_part_event FOREIGN KEY (EventID)
+ 13          REFERENCES Event(EventID)
+ 14  );
+
+Table created.
+
+SQL> DESCRIBE Participation;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ PARTICIPATIONID                           NOT NULL NUMBER(5)
+ VOLID                                     NOT NULL NUMBER(5)
+ EVENTID                                   NOT NULL NUMBER(5)
+ REGDATE                                            DATE
+ ATTSTATUS                                          VARCHAR2(20)
+ PERFEVAL                                           VARCHAR2(50)
+ FEEDBACKRATING                                     NUMBER(2)
+ HOURSWORKED                                        NUMBER(4)
+
+SQL> CREATE TABLE Activity_Assignment (
+  2      AssignmentID     NUMBER(5)    PRIMARY KEY,
+  3      ActivityID       NUMBER(5)    NOT NULL,
+  4      VolID            NUMBER(5)    NOT NULL,
+  5      Role             VARCHAR2(30),
+  6      AssignDate       DATE,
+  7      CompletionStatus VARCHAR2(20) DEFAULT 'Pending',
+  8      CONSTRAINT fk_aa_act FOREIGN KEY (ActivityID)
+  9          REFERENCES Activity(ActivityID),
+ 10      CONSTRAINT fk_aa_vol FOREIGN KEY (VolID)
+ 11          REFERENCES Volunteer(VolID)
+ 12  );
+
+Table created.
+
+SQL> DESCRIBE Activity_Assignment;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ASSIGNMENTID                              NOT NULL NUMBER(5)
+ ACTIVITYID                                NOT NULL NUMBER(5)
+ VOLID                                     NOT NULL NUMBER(5)
+ ROLE                                               VARCHAR2(30)
+ ASSIGNDATE                                         DATE
+ COMPLETIONSTATUS                                   VARCHAR2(20)
+
+SQL> CREATE TABLE Task_Assignment (
+  2      TaskAssignID     NUMBER(5)    PRIMARY KEY,
+  3      TaskID           NUMBER(5)    NOT NULL,
+  4      VolID            NUMBER(5)    NOT NULL,
+  5      AssignDate       DATE,
+  6      CompletionStatus VARCHAR2(20) DEFAULT 'Pending',
+  7      CONSTRAINT fk_ta_task FOREIGN KEY (TaskID)
+  8          REFERENCES Task(TaskID),
+  9      CONSTRAINT fk_ta_vol FOREIGN KEY (VolID)
+ 10          REFERENCES Volunteer(VolID)
+ 11  );
+
+Table created.
+
+SQL> DESCRIBE Task_Assignment;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ TASKASSIGNID                              NOT NULL NUMBER(5)
+ TASKID                                    NOT NULL NUMBER(5)
+ VOLID                                     NOT NULL NUMBER(5)
+ ASSIGNDATE                                         DATE
+ COMPLETIONSTATUS                                   VARCHAR2(20)
+
+SQL> INSERT INTO Organizer VALUES (seq_org.NEXTVAL, 'AIUB Volunteer Club', 'University');
+
+1 row created.
+
+SQL> INSERT INTO Organizer VALUES (seq_org.NEXTVAL, 'Red Crescent Society', 'NGO');
+
+1 row created.
+
+SQL> INSERT INTO Organizer VALUES (seq_org.NEXTVAL, 'Dhaka City Corporation', 'Government');
+
+1 row created.
+
+SQL> INSERT INTO Organizer VALUES (seq_org.NEXTVAL, 'AIUB CSE Department', 'University');
+
+1 row created.
+
+SQL> INSERT INTO Organizer VALUES (seq_org.NEXTVAL, 'Bangladesh Youth Forum', 'NGO');
+
+1 row created.
+
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> SELECT * FROM Organizer;
+
+     ORGID ORGNAME
+---------- --------------------------------------------------
+ORGTYPE
+------------------------------
+         1 AIUB Volunteer Club
+University
+
+         2 Red Crescent Society
+NGO
+
+         3 Dhaka City Corporation
+Government
+
+
+     ORGID ORGNAME
+---------- --------------------------------------------------
+ORGTYPE
+------------------------------
+         4 AIUB CSE Department
+University
+
+         5 Bangladesh Youth Forum
+NGO
+
+
+SQL> INSERT INTO Event VALUES (seq_event.NEXTVAL, 'Blood Donation Camp', 'AIUB Campus', 'Health', 'Annual blood donation drive', 1);
+
+1 row created.
+
+SQL> INSERT INTO Event VALUES (seq_event.NEXTVAL, 'Tree Plantation Drive', 'Dhaka City', 'Environment', 'Plant 1000 trees across Dhaka', 3);
+
+1 row created.
+
+SQL> INSERT INTO Event VALUES (seq_event.NEXTVAL, 'Community Tutoring', 'AIUB Lab', 'Education', 'Free tutoring for underprivileged', 4);
+
+1 row created.
+
+SQL> INSERT INTO Event VALUES (seq_event.NEXTVAL, 'Disaster Relief 2026', 'Sylhet District', 'Relief', 'Flood relief operation', 2);
+
+1 row created.
+
+SQL> INSERT INTO Event VALUES (seq_event.NEXTVAL, 'Youth Awareness Seminar', 'AIUB Auditorium', 'Awareness', 'Mental health awareness program', 5);
+
+1 row created.
+
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> SELECT * FROM Event;
+
+   EVENTID EVENTNAME
+---------- --------------------------------------------------
+EVENTLOCATION
+--------------------------------------------------
+EVENTTYPE
+------------------------------
+EVENTDESC
+--------------------------------------------------------------------------------
+     ORGID
+----------
+         1 Blood Donation Camp
+AIUB Campus
+Health
+
+   EVENTID EVENTNAME
+---------- --------------------------------------------------
+EVENTLOCATION
+--------------------------------------------------
+EVENTTYPE
+------------------------------
+EVENTDESC
+--------------------------------------------------------------------------------
+     ORGID
+----------
+Annual blood donation drive
+         1
+
+
+   EVENTID EVENTNAME
+---------- --------------------------------------------------
+EVENTLOCATION
+--------------------------------------------------
+EVENTTYPE
+------------------------------
+EVENTDESC
+--------------------------------------------------------------------------------
+     ORGID
+----------
+         2 Tree Plantation Drive
+Dhaka City
+Environment
+
+   EVENTID EVENTNAME
+---------- --------------------------------------------------
+EVENTLOCATION
+--------------------------------------------------
+EVENTTYPE
+------------------------------
+EVENTDESC
+--------------------------------------------------------------------------------
+     ORGID
+----------
+Plant 1000 trees across Dhaka
+         3
+
+
+   EVENTID EVENTNAME
+---------- --------------------------------------------------
+EVENTLOCATION
+--------------------------------------------------
+EVENTTYPE
+------------------------------
+EVENTDESC
+--------------------------------------------------------------------------------
+     ORGID
+----------
+         3 Community Tutoring
+AIUB Lab
+Education
+
+   EVENTID EVENTNAME
+---------- --------------------------------------------------
+EVENTLOCATION
+--------------------------------------------------
+EVENTTYPE
+------------------------------
+EVENTDESC
+--------------------------------------------------------------------------------
+     ORGID
+----------
+Free tutoring for underprivileged
+         4
+
+
+   EVENTID EVENTNAME
+---------- --------------------------------------------------
+EVENTLOCATION
+--------------------------------------------------
+EVENTTYPE
+------------------------------
+EVENTDESC
+--------------------------------------------------------------------------------
+     ORGID
+----------
+         4 Disaster Relief 2026
+Sylhet District
+Relief
+
+   EVENTID EVENTNAME
+---------- --------------------------------------------------
+EVENTLOCATION
+--------------------------------------------------
+EVENTTYPE
+------------------------------
+EVENTDESC
+--------------------------------------------------------------------------------
+     ORGID
+----------
+Flood relief operation
+         2
+
+
+   EVENTID EVENTNAME
+---------- --------------------------------------------------
+EVENTLOCATION
+--------------------------------------------------
+EVENTTYPE
+------------------------------
+EVENTDESC
+--------------------------------------------------------------------------------
+     ORGID
+----------
+         5 Youth Awareness Seminar
+AIUB Auditorium
+Awareness
+
+   EVENTID EVENTNAME
+---------- --------------------------------------------------
+EVENTLOCATION
+--------------------------------------------------
+EVENTTYPE
+------------------------------
+EVENTDESC
+--------------------------------------------------------------------------------
+     ORGID
+----------
+Mental health awareness program
+         5
+
+
+SQL> INSERT INTO Activity VALUES (seq_act.NEXTVAL, 'Donor Registration', 'Register incoming blood donors', 1);
+
+1 row created.
+
+SQL> INSERT INTO Activity VALUES (seq_act.NEXTVAL, 'Sapling Distribution', 'Distribute saplings to volunteers', 2);
+
+1 row created.
+
+SQL> INSERT INTO Activity VALUES (seq_act.NEXTVAL, 'Math Tutoring Session', 'Conduct math classes for students', 3);
+
+1 row created.
+
+SQL> INSERT INTO Activity VALUES (seq_act.NEXTVAL, 'Food Pack Distribution', 'Distribute food packs to victims', 4);
+
+1 row created.
+
+SQL> INSERT INTO Activity VALUES (seq_act.NEXTVAL, 'Seminar Coordination', 'Manage speakers and seating', 5);
+
+1 row created.
+
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> SELECT * FROM Event;
+
+   EVENTID EVENTNAME
+---------- --------------------------------------------------
+EVENTLOCATION
+--------------------------------------------------
+EVENTTYPE
+------------------------------
+EVENTDESC
+--------------------------------------------------------------------------------
+     ORGID
+----------
+         1 Blood Donation Camp
+AIUB Campus
+Health
+
+   EVENTID EVENTNAME
+---------- --------------------------------------------------
+EVENTLOCATION
+--------------------------------------------------
+EVENTTYPE
+------------------------------
+EVENTDESC
+--------------------------------------------------------------------------------
+     ORGID
+----------
+Annual blood donation drive
+         1
+
+
+   EVENTID EVENTNAME
+---------- --------------------------------------------------
+EVENTLOCATION
+--------------------------------------------------
+EVENTTYPE
+------------------------------
+EVENTDESC
+--------------------------------------------------------------------------------
+     ORGID
+----------
+         2 Tree Plantation Drive
+Dhaka City
+Environment
+
+   EVENTID EVENTNAME
+---------- --------------------------------------------------
+EVENTLOCATION
+--------------------------------------------------
+EVENTTYPE
+------------------------------
+EVENTDESC
+--------------------------------------------------------------------------------
+     ORGID
+----------
+Plant 1000 trees across Dhaka
+         3
+
+
+   EVENTID EVENTNAME
+---------- --------------------------------------------------
+EVENTLOCATION
+--------------------------------------------------
+EVENTTYPE
+------------------------------
+EVENTDESC
+--------------------------------------------------------------------------------
+     ORGID
+----------
+         3 Community Tutoring
+AIUB Lab
+Education
+
+   EVENTID EVENTNAME
+---------- --------------------------------------------------
+EVENTLOCATION
+--------------------------------------------------
+EVENTTYPE
+------------------------------
+EVENTDESC
+--------------------------------------------------------------------------------
+     ORGID
+----------
+Free tutoring for underprivileged
+         4
+
+
+   EVENTID EVENTNAME
+---------- --------------------------------------------------
+EVENTLOCATION
+--------------------------------------------------
+EVENTTYPE
+------------------------------
+EVENTDESC
+--------------------------------------------------------------------------------
+     ORGID
+----------
+         4 Disaster Relief 2026
+Sylhet District
+Relief
+
+   EVENTID EVENTNAME
+---------- --------------------------------------------------
+EVENTLOCATION
+--------------------------------------------------
+EVENTTYPE
+------------------------------
+EVENTDESC
+--------------------------------------------------------------------------------
+     ORGID
+----------
+Flood relief operation
+         2
+
+
+   EVENTID EVENTNAME
+---------- --------------------------------------------------
+EVENTLOCATION
+--------------------------------------------------
+EVENTTYPE
+------------------------------
+EVENTDESC
+--------------------------------------------------------------------------------
+     ORGID
+----------
+         5 Youth Awareness Seminar
+AIUB Auditorium
+Awareness
+
+   EVENTID EVENTNAME
+---------- --------------------------------------------------
+EVENTLOCATION
+--------------------------------------------------
+EVENTTYPE
+------------------------------
+EVENTDESC
+--------------------------------------------------------------------------------
+     ORGID
+----------
+Mental health awareness program
+         5
+
+
+SQL> INSERT INTO Activity VALUES (seq_act.NEXTVAL, 'Donor Registration', 'Register incoming blood donors', 1);
+
+1 row created.
+
+SQL> INSERT INTO Activity VALUES (seq_act.NEXTVAL, 'Sapling Distribution', 'Distribute saplings to volunteers', 2);
+
+1 row created.
+
+SQL> INSERT INTO Activity VALUES (seq_act.NEXTVAL, 'Math Tutoring Session', 'Conduct math classes for students', 3);
+
+1 row created.
+
+SQL> INSERT INTO Activity VALUES (seq_act.NEXTVAL, 'Food Pack Distribution', 'Distribute food packs to victims', 4);
+
+1 row created.
+
+SQL> INSERT INTO Activity VALUES (seq_act.NEXTVAL, 'Seminar Coordination', 'Manage speakers and seating', 5);
+
+1 row created.
+
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> SELECT * FROM Activity;
+
+ACTIVITYID ACTIVITYNAME
+---------- --------------------------------------------------
+ACTIVITYDESC
+--------------------------------------------------------------------------------
+   EVENTID
+----------
+         1 Donor Registration
+Register incoming blood donors
+         1
+
+         2 Sapling Distribution
+Distribute saplings to volunteers
+         2
+
+ACTIVITYID ACTIVITYNAME
+---------- --------------------------------------------------
+ACTIVITYDESC
+--------------------------------------------------------------------------------
+   EVENTID
+----------
+
+         3 Math Tutoring Session
+Conduct math classes for students
+         3
+
+         4 Food Pack Distribution
+Distribute food packs to victims
+
+ACTIVITYID ACTIVITYNAME
+---------- --------------------------------------------------
+ACTIVITYDESC
+--------------------------------------------------------------------------------
+   EVENTID
+----------
+         4
+
+         5 Seminar Coordination
+Manage speakers and seating
+         5
+
+         6 Donor Registration
+
+ACTIVITYID ACTIVITYNAME
+---------- --------------------------------------------------
+ACTIVITYDESC
+--------------------------------------------------------------------------------
+   EVENTID
+----------
+Register incoming blood donors
+         1
+
+         7 Sapling Distribution
+Distribute saplings to volunteers
+         2
+
+
+ACTIVITYID ACTIVITYNAME
+---------- --------------------------------------------------
+ACTIVITYDESC
+--------------------------------------------------------------------------------
+   EVENTID
+----------
+         8 Math Tutoring Session
+Conduct math classes for students
+         3
+
+         9 Food Pack Distribution
+Distribute food packs to victims
+         4
+
+ACTIVITYID ACTIVITYNAME
+---------- --------------------------------------------------
+ACTIVITYDESC
+--------------------------------------------------------------------------------
+   EVENTID
+----------
+
+        10 Seminar Coordination
+Manage speakers and seating
+         5
+
+
+10 rows selected.
+
+SQL> INSERT INTO Student VALUES (seq_student.NEXTVAL, 'CSE');
+
+1 row created.
+
+SQL> INSERT INTO Student VALUES (seq_student.NEXTVAL, 'EEE');
+
+1 row created.
+
+SQL> INSERT INTO Student VALUES (seq_student.NEXTVAL, 'BBA');
+
+1 row created.
+
+SQL> INSERT INTO Student VALUES (seq_student.NEXTVAL, 'Civil Engineering');
+
+1 row created.
+
+SQL> INSERT INTO Student VALUES (seq_student.NEXTVAL, 'English');
+
+1 row created.
+
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> SELECT * FROM Student;
+
+ STUDENTID DEPARTMENT
+---------- --------------------------------------------------
+         1 CSE
+         2 EEE
+         3 BBA
+         4 Civil Engineering
+         5 English
+
+SQL> INSERT INTO Volunteer VALUES (seq_vol.NEXTVAL, 'Rafiur Rahman', 'rafiur@aiub.edu', '01711111111', 1);
+
+1 row created.
+
+SQL> INSERT INTO Volunteer VALUES (seq_vol.NEXTVAL, 'Tasnim Akter', 'tasnim@aiub.edu', '01722222222', 2);
+
+1 row created.
+
+SQL> INSERT INTO Volunteer VALUES (seq_vol.NEXTVAL, 'Arif Hossain', 'arif@aiub.edu', '01733333333', 3);
+
+1 row created.
+
+SQL> INSERT INTO Volunteer VALUES (seq_vol.NEXTVAL, 'Sadia Islam', 'sadia@aiub.edu', '01744444444', 4);
+
+1 row created.
+
+SQL> INSERT INTO Volunteer VALUES (seq_vol.NEXTVAL, 'Mehedi Hassan', 'mehedi@aiub.edu', '01755555555', 5);
+
+1 row created.
+
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> SELECT * FROM Volunteer;
+
+     VOLID VNAME
+---------- --------------------------------------------------
+EMAIL                                              CONTACTNO        STUDENTID
+-------------------------------------------------- --------------- ----------
+         1 Rafiur Rahman
+rafiur@aiub.edu                                    01711111111              1
+
+         2 Tasnim Akter
+tasnim@aiub.edu                                    01722222222              2
+
+         3 Arif Hossain
+arif@aiub.edu                                      01733333333              3
+
+
+     VOLID VNAME
+---------- --------------------------------------------------
+EMAIL                                              CONTACTNO        STUDENTID
+-------------------------------------------------- --------------- ----------
+         4 Sadia Islam
+sadia@aiub.edu                                     01744444444              4
+
+         5 Mehedi Hassan
+mehedi@aiub.edu                                    01755555555              5
+
+
+SQL> INSERT INTO Task VALUES (seq_task.NEXTVAL, 'Set Up Registration Desk', 'Arrange tables and forms', '05-APR-26', 'Pending', 1);
+
+1 row created.
+
+SQL> INSERT INTO Task VALUES (seq_task.NEXTVAL, 'Prepare Sapling Bags', 'Pack saplings into carry bags', '06-APR-26', 'Pending', 2);
+
+1 row created.
+
+SQL> INSERT INTO Task VALUES (seq_task.NEXTVAL, 'Prepare Study Materials', 'Print and sort worksheets', '07-APR-26', 'Completed', 3);
+
+1 row created.
+
+SQL> INSERT INTO Task VALUES (seq_task.NEXTVAL, 'Load Relief Trucks', 'Load food and medicine packs', '08-APR-26', 'Pending', 4);
+
+1 row created.
+
+SQL> INSERT INTO Task VALUES (seq_task.NEXTVAL, 'Setup Seminar Hall', 'Arrange chairs and microphones', '09-APR-26', 'Pending', 5);
+
+1 row created.
+
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> SELECT * FROM Task;
+
+    TASKID TASKNAME
+---------- --------------------------------------------------
+TASKDESC
+--------------------------------------------------------------------------------
+DEADLINE  STATUS               ACTIVITYID
+--------- -------------------- ----------
+         1 Set Up Registration Desk
+Arrange tables and forms
+05-APR-26 Pending                       1
+
+         2 Prepare Sapling Bags
+Pack saplings into carry bags
+06-APR-26 Pending                       2
+
+    TASKID TASKNAME
+---------- --------------------------------------------------
+TASKDESC
+--------------------------------------------------------------------------------
+DEADLINE  STATUS               ACTIVITYID
+--------- -------------------- ----------
+
+         3 Prepare Study Materials
+Print and sort worksheets
+07-APR-26 Completed                     3
+
+         4 Load Relief Trucks
+Load food and medicine packs
+
+    TASKID TASKNAME
+---------- --------------------------------------------------
+TASKDESC
+--------------------------------------------------------------------------------
+DEADLINE  STATUS               ACTIVITYID
+--------- -------------------- ----------
+08-APR-26 Pending                       4
+
+         5 Setup Seminar Hall
+Arrange chairs and microphones
+09-APR-26 Pending                       5
+
+
+SQL> INSERT INTO Vol_Skill VALUES (seq_skill.NEXTVAL, 1, 'First Aid');
+
+1 row created.
+
+SQL> INSERT INTO Vol_Skill VALUES (seq_skill.NEXTVAL, 2, 'Teaching');
+
+1 row created.
+
+SQL> INSERT INTO Vol_Skill VALUES (seq_skill.NEXTVAL, 3, 'Logistics');
+
+1 row created.
+
+SQL> INSERT INTO Vol_Skill VALUES (seq_skill.NEXTVAL, 4, 'Communication');
+
+1 row created.
+
+SQL> INSERT INTO Vol_Skill VALUES (seq_skill.NEXTVAL, 5, 'Event Management');
+
+1 row created.
+
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> SELECT * FROM Vol_Skill;
+
+   SKILLID      VOLID SKILL
+---------- ---------- --------------------------------------------------
+         1          1 First Aid
+         2          2 Teaching
+         3          3 Logistics
+         4          4 Communication
+         5          5 Event Management
+
+SQL> INSERT INTO Participation VALUES (seq_part.NEXTVAL, 1, 1, '01-APR-26', 'Present', 'Excellent', 5, 6);
+
+1 row created.
+
+SQL> INSERT INTO Participation VALUES (seq_part.NEXTVAL, 2, 2, '02-APR-26', 'Present', 'Good', 4, 5);
+
+1 row created.
+
+SQL> INSERT INTO Participation VALUES (seq_part.NEXTVAL, 3, 3, '03-APR-26', 'Present', 'Average', 3, 4);
+
+1 row created.
+
+SQL> INSERT INTO Participation VALUES (seq_part.NEXTVAL, 4, 4, '04-APR-26', 'Absent', 'N/A', 0, 0);
+
+1 row created.
+
+SQL> INSERT INTO Participation VALUES (seq_part.NEXTVAL, 5, 5, '05-APR-26', 'Present', 'Excellent', 5, 7);
+
+1 row created.
+
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> SELECT * FROM Participation;
+
+PARTICIPATIONID      VOLID    EVENTID REGDATE   ATTSTATUS
+--------------- ---------- ---------- --------- --------------------
+PERFEVAL                                           FEEDBACKRATING HOURSWORKED
+-------------------------------------------------- -------------- -----------
+              1          1          1 01-APR-26 Present
+Excellent                                                       5           6
+
+              2          2          2 02-APR-26 Present
+Good                                                            4           5
+
+              3          3          3 03-APR-26 Present
+Average                                                         3           4
+
+
+PARTICIPATIONID      VOLID    EVENTID REGDATE   ATTSTATUS
+--------------- ---------- ---------- --------- --------------------
+PERFEVAL                                           FEEDBACKRATING HOURSWORKED
+-------------------------------------------------- -------------- -----------
+              4          4          4 04-APR-26 Absent
+N/A                                                             0           0
+
+              5          5          5 05-APR-26 Present
+Excellent                                                       5           7
+
+
+SQL> INSERT INTO Activity_Assignment VALUES (seq_actassign.NEXTVAL, 1, 1, 'Team Lead', '01-APR-26', 'Completed');
+
+1 row created.
+
+SQL> INSERT INTO Activity_Assignment VALUES (seq_actassign.NEXTVAL, 2, 2, 'Coordinator', '02-APR-26', 'Pending');
+
+1 row created.
+
+SQL> INSERT INTO Activity_Assignment VALUES (seq_actassign.NEXTVAL, 3, 3, 'Tutor', '03-APR-26', 'Pending');
+
+1 row created.
+
+SQL> INSERT INTO Activity_Assignment VALUES (seq_actassign.NEXTVAL, 4, 4, 'Helper', '04-APR-26', 'Pending');
+
+1 row created.
+
+SQL> INSERT INTO Activity_Assignment VALUES (seq_actassign.NEXTVAL, 5, 5, 'Stage Manager', '05-APR-26', 'Pending');
+
+1 row created.
+
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> SELECT * FROM Activity_Assignment;
+
+ASSIGNMENTID ACTIVITYID      VOLID ROLE                           ASSIGNDAT
+------------ ---------- ---------- ------------------------------ ---------
+COMPLETIONSTATUS
+--------------------
+           1          1          1 Team Lead                      01-APR-26
+Completed
+
+           2          2          2 Coordinator                    02-APR-26
+Pending
+
+           3          3          3 Tutor                          03-APR-26
+Pending
+
+
+ASSIGNMENTID ACTIVITYID      VOLID ROLE                           ASSIGNDAT
+------------ ---------- ---------- ------------------------------ ---------
+COMPLETIONSTATUS
+--------------------
+           4          4          4 Helper                         04-APR-26
+Pending
+
+           5          5          5 Stage Manager                  05-APR-26
+Pending
+
+
+SQL> INSERT INTO Task_Assignment VALUES (seq_taskassign.NEXTVAL, 1, 1, '01-APR-26', 'Completed');
+
+1 row created.
+
+SQL> INSERT INTO Task_Assignment VALUES (seq_taskassign.NEXTVAL, 2, 2, '02-APR-26', 'Pending');
+
+1 row created.
+
+SQL> INSERT INTO Task_Assignment VALUES (seq_taskassign.NEXTVAL, 3, 3, '03-APR-26', 'Completed');
+
+1 row created.
+
+SQL> INSERT INTO Task_Assignment VALUES (seq_taskassign.NEXTVAL, 4, 4, '04-APR-26', 'Pending');
+
+1 row created.
+
+SQL> INSERT INTO Task_Assignment VALUES (seq_taskassign.NEXTVAL, 5, 5, '05-APR-26', 'Pending');
+
+1 row created.
+
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> SELECT * FROM Task_Assignment;
+
+TASKASSIGNID     TASKID      VOLID ASSIGNDAT COMPLETIONSTATUS
+------------ ---------- ---------- --------- --------------------
+           1          1          1 01-APR-26 Completed
+           2          2          2 02-APR-26 Pending
+           3          3          3 03-APR-26 Completed
+           4          4          4 04-APR-26 Pending
+           5          5          5 05-APR-26 Pending
+
+SQL> SET SERVEROUTPUT ON;
+SQL> DECLARE
+  2      v_name    VARCHAR2(50);
+  3      v_email   VARCHAR2(50);
+  4  BEGIN
+  5      SELECT VName, Email
+  6      INTO v_name, v_email
+  7      FROM Volunteer
+  8      WHERE VolID = 1;
+  9
+ 10      DBMS_OUTPUT.PUT_LINE('Name  : ' || v_name);
+ 11      DBMS_OUTPUT.PUT_LINE('Email : ' || v_email);
+ 12  END;
+ 13  /
+Name  : Rafiur Rahman
+Email : rafiur@aiub.edu
+
+PL/SQL procedure successfully completed.
+
+SQL> SET SERVEROUTPUT ON;
+SQL> DECLARE
+  2      v_taskname  VARCHAR2(50);
+  3      v_deadline  DATE;
+  4  BEGIN
+  5      SELECT TaskName, Deadline
+  6      INTO v_taskname, v_deadline
+  7      FROM Task
+  8      WHERE TaskID = 1;
+  9
+ 10      DBMS_OUTPUT.PUT_LINE('Task     : ' || v_taskname);
+ 11      DBMS_OUTPUT.PUT_LINE('Deadline : ' || v_deadline);
+ 12  END;
+ 13  /
+Task     : Set Up Registration Desk
+Deadline : 05-APR-26
+
+PL/SQL procedure successfully completed.
+
+SQL> SELECT V.VName, P.HoursWorked
+  2  FROM Volunteer V, Participation P
+  3  WHERE V.VolID = P.VolID
+  4  AND P.HoursWorked > 5;
+
+VNAME                                              HOURSWORKED
+-------------------------------------------------- -----------
+Rafiur Rahman                                                6
+Mehedi Hassan                                                7
+
+SQL> SELECT EventName, EventType, EventLocation
+  2  FROM Event
+  3  WHERE EventType = 'Health'
+  4  OR EventType = 'Environment';
+
+EVENTNAME
+--------------------------------------------------
+EVENTTYPE
+------------------------------
+EVENTLOCATION
+--------------------------------------------------
+Blood Donation Camp
+Health
+AIUB Campus
+
+Tree Plantation Drive
+Environment
+Dhaka City
+
+EVENTNAME
+--------------------------------------------------
+EVENTTYPE
+------------------------------
+EVENTLOCATION
+--------------------------------------------------
+
+
+SQL> SELECT EventName, EventType, EventLocation
+  2  FROM Event
+  3  WHERE EventType = 'Health'
+  4  OR EventType = 'Environment';
+
+EVENTNAME
+--------------------------------------------------
+EVENTTYPE
+------------------------------
+EVENTLOCATION
+--------------------------------------------------
+Blood Donation Camp
+Health
+AIUB Campus
+
+Tree Plantation Drive
+Environment
+Dhaka City
+
+EVENTNAME
+--------------------------------------------------
+EVENTTYPE
+------------------------------
+EVENTLOCATION
+--------------------------------------------------
+
+
+SQL> SELECT UPPER(VName)  AS VolunteerName,
+  2         LOWER(Email)  AS EmailAddress
+  3  FROM Volunteer;
+
+VOLUNTEERNAME
+--------------------------------------------------
+EMAILADDRESS
+--------------------------------------------------
+RAFIUR RAHMAN
+rafiur@aiub.edu
+
+TASNIM AKTER
+tasnim@aiub.edu
+
+ARIF HOSSAIN
+arif@aiub.edu
+
+
+VOLUNTEERNAME
+--------------------------------------------------
+EMAILADDRESS
+--------------------------------------------------
+SADIA ISLAM
+sadia@aiub.edu
+
+MEHEDI HASSAN
+mehedi@aiub.edu
+
+
+SQL> SELECT TaskName,
+  2         ROUND(Deadline - SYSDATE) AS DaysLeft
+  3  FROM Task;
+
+TASKNAME                                             DAYSLEFT
+-------------------------------------------------- ----------
+Set Up Registration Desk                                  -13
+Prepare Sapling Bags                                      -12
+Prepare Study Materials                                   -11
+Load Relief Trucks                                        -10
+Setup Seminar Hall                                         -9
+
+SQL> SELECT EventID,
+  2         SUM(HoursWorked)    AS TotalHours,
+  3         AVG(FeedbackRating) AS AvgRating
+  4  FROM Participation
+  5  GROUP BY EventID;
+
+   EVENTID TOTALHOURS  AVGRATING
+---------- ---------- ----------
+         1          6          5
+         2          5          4
+         3          4          3
+         4          0          0
+         5          7          5
+
+SQL> SELECT COUNT(VolID)     AS TotalVolunteers,
+  2         MAX(HoursWorked) AS MaxHours,
+  3         MIN(HoursWorked) AS MinHours
+  4  FROM Participation;
+
+TOTALVOLUNTEERS   MAXHOURS   MINHOURS
+--------------- ---------- ----------
+              5          7          0
+
+SQL> SELECT COUNT(VolID)     AS TotalVolunteers,
+  2         MAX(HoursWorked) AS MaxHours,
+  3         MIN(HoursWorked) AS MinHours
+  4  FROM Participation;
+
+TOTALVOLUNTEERS   MAXHOURS   MINHOURS
+--------------- ---------- ----------
+              5          7          0
+
+SQL> SET SERVEROUTPUT ON;
+SQL> DECLARE
+  2      v_id    NUMBER := 1;
+  3      v_name  VARCHAR2(50);
+  4      v_count NUMBER;
+  5  BEGIN
+  6      SELECT COUNT(*) INTO v_count FROM Volunteer;
+  7
+  8      LOOP
+  9          EXIT WHEN v_id > v_count;
+ 10          SELECT VName INTO v_name
+ 11          FROM Volunteer WHERE VolID = v_id;
+ 12
+ 13          DBMS_OUTPUT.PUT_LINE('Volunteer ' || v_id || ': ' || v_name);
+ 14          v_id := v_id + 1;
+ 15      END LOOP;
+ 16  END;
+ 17  /
+Volunteer 1: Rafiur Rahman
+Volunteer 2: Tasnim Akter
+Volunteer 3: Arif Hossain
+Volunteer 4: Sadia Islam
+Volunteer 5: Mehedi Hassan
+
+PL/SQL procedure successfully completed.
+
+SQL> SET SERVEROUTPUT ON;
+SQL> DECLARE
+  2      v_taskname VARCHAR2(50);
+  3  BEGIN
+  4      FOR i IN 1..5 LOOP
+  5          SELECT TaskName INTO v_taskname
+  6          FROM Task WHERE TaskID = i;
+  7
+  8          DBMS_OUTPUT.PUT_LINE('Task ' || i || ': ' || v_taskname);
+  9      END LOOP;
+ 10  END;
+ 11  /
+Task 1: Set Up Registration Desk
+Task 2: Prepare Sapling Bags
+Task 3: Prepare Study Materials
+Task 4: Load Relief Trucks
+Task 5: Setup Seminar Hall
+
+PL/SQL procedure successfully completed.
+
+SQL> SET SERVEROUTPUT ON;
+SQL> DECLARE
+  2      v_rating NUMBER;
+  3      v_result VARCHAR2(20);
+  4  BEGIN
+  5      SELECT FeedbackRating INTO v_rating
+  6      FROM Participation WHERE ParticipationID = 1;
+  7
+  8      IF v_rating = 5 THEN
+  9          v_result := 'Excellent';
+ 10      ELSIF v_rating = 4 THEN
+ 11          v_result := 'Good';
+ 12      ELSIF v_rating = 3 THEN
+ 13          v_result := 'Average';
+ 14      ELSE
+ 15          v_result := 'Poor';
+ 16      END IF;
+ 17
+ 18      DBMS_OUTPUT.PUT_LINE('Rating : ' || v_rating);
+ 19      DBMS_OUTPUT.PUT_LINE('Level  : ' || v_result);
+ 20  END;
+ 21  /
+Rating : 5
+Level  : Excellent
+
+PL/SQL procedure successfully completed.
+
+SQL> SET SERVEROUTPUT ON;
+SQL> DECLARE
+  2      v_status VARCHAR2(20);
+  3      v_msg    VARCHAR2(50);
+  4  BEGIN
+  5      SELECT Status INTO v_status
+  6      FROM Task WHERE TaskID = 1;
+  7
+  8      v_msg := CASE v_status
+  9          WHEN 'Completed' THEN 'Task is done'
+ 10          WHEN 'Pending'   THEN 'Task is waiting'
+ 11          ELSE                  'Status unknown'
+ 12      END;
+ 13
+ 14      DBMS_OUTPUT.PUT_LINE('Status  : ' || v_status);
+ 15      DBMS_OUTPUT.PUT_LINE('Message : ' || v_msg);
+ 16  END;
+ 17  /
+Status  : Pending
+Message : Task is waiting
+
+PL/SQL procedure successfully completed.
+
+SQL> SELECT VName, Email
+  2  FROM Volunteer
+  3  WHERE VolID = (
+  4      SELECT VolID
+  5      FROM Participation
+  6      WHERE EventID = (
+  7          SELECT EventID FROM Event
+  8          WHERE EventName = 'Blood Donation Camp'
+  9      )
+ 10      AND ROWNUM = 1
+ 11  );
+
+VNAME
+--------------------------------------------------
+EMAIL
+--------------------------------------------------
+Rafiur Rahman
+rafiur@aiub.edu
+
+
+SQL> SELECT V.VName, P.HoursWorked
+  2  FROM Volunteer V, Participation P
+  3  WHERE V.VolID = P.VolID
+  4  AND P.HoursWorked > (
+  5      SELECT AVG(HoursWorked)
+  6      FROM Participation
+  7  );
+
+VNAME                                              HOURSWORKED
+-------------------------------------------------- -----------
+Rafiur Rahman                                                6
+Tasnim Akter                                                 5
+Mehedi Hassan                                                7
+
+SQL> SELECT V.VName       AS VolunteerName,
+  2         E.EventName   AS EventName,
+  3         P.AttStatus   AS Attendance,
+  4         P.HoursWorked AS HoursWorked
+  5  FROM Volunteer V, Event E, Participation P
+  6  WHERE V.VolID   = P.VolID
+  7  AND   E.EventID = P.EventID;
+
+VOLUNTEERNAME
+--------------------------------------------------
+EVENTNAME                                          ATTENDANCE
+-------------------------------------------------- --------------------
+HOURSWORKED
+-----------
+Rafiur Rahman
+Blood Donation Camp                                Present
+          6
+
+Tasnim Akter
+Tree Plantation Drive                              Present
+          5
+
+VOLUNTEERNAME
+--------------------------------------------------
+EVENTNAME                                          ATTENDANCE
+-------------------------------------------------- --------------------
+HOURSWORKED
+-----------
+
+Arif Hossain
+Community Tutoring                                 Present
+          4
+
+Sadia Islam
+Disaster Relief 2026                               Absent
+
+VOLUNTEERNAME
+--------------------------------------------------
+EVENTNAME                                          ATTENDANCE
+-------------------------------------------------- --------------------
+HOURSWORKED
+-----------
+          0
+
+Mehedi Hassan
+Youth Awareness Seminar                            Present
+          7
+
+
+SQL> SELECT A.ActivityName        AS Activity,
+  2         V.VName               AS Volunteer,
+  3         AA.Role               AS Role,
+  4         AA.CompletionStatus   AS Status
+  5  FROM Activity A, Volunteer V, Activity_Assignment AA
+  6  WHERE A.ActivityID = AA.ActivityID
+  7  AND   V.VolID      = AA.VolID;
+
+ACTIVITY
+--------------------------------------------------
+VOLUNTEER
+--------------------------------------------------
+ROLE                           STATUS
+------------------------------ --------------------
+Donor Registration
+Rafiur Rahman
+Team Lead                      Completed
+
+Sapling Distribution
+Tasnim Akter
+Coordinator                    Pending
+
+ACTIVITY
+--------------------------------------------------
+VOLUNTEER
+--------------------------------------------------
+ROLE                           STATUS
+------------------------------ --------------------
+
+Math Tutoring Session
+Arif Hossain
+Tutor                          Pending
+
+Food Pack Distribution
+Sadia Islam
+
+ACTIVITY
+--------------------------------------------------
+VOLUNTEER
+--------------------------------------------------
+ROLE                           STATUS
+------------------------------ --------------------
+Helper                         Pending
+
+Seminar Coordination
+Mehedi Hassan
+Stage Manager                  Pending
